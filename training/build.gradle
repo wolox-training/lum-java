@@ -30,6 +30,9 @@ dependencies {
 	// PostgreSQL
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
 
+	// Lombok
+	compileOnly('org.projectlombok:lombok')
+
 	// Tests
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
