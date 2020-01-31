@@ -1,6 +1,10 @@
 package wolox.training.controllers;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.util.Optional;
+import javax.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -33,12 +37,17 @@ public class BookController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Book create(@RequestBody Book book) {
+    @ApiOperation(value = "Giving a book, creates a book", response = Book.class)
+    public Book create(
+        @ApiParam(value = "Book object") @RequestBody Book book) {
         return bookRepository.save(book);
     }
 
     @GetMapping("/{ísbn}")
-    public Book read(@PathVariable String isbn) {
+    @ApiOperation(value = "Giving an isbn, returns a book", response = Book.class)
+    public Book read(
+        @ApiParam(value = "Isbn to find book", required = true) @PathVariable String isbn
+    ) {
         try {
             Optional<Book> book = bookRepository.findById(isbn);
             return book.orElse(null);
@@ -48,7 +57,11 @@ public class BookController {
     }
 
     @PutMapping("/{isbn}")
-    public Book update(@RequestBody Book book, @PathVariable String isbn) {
+    @ApiOperation(value = "Giving an isbn and a book, updates give book", response = Book.class)
+    public Book update(
+        @ApiParam(value = "Book object", required = true) @RequestBody Book book,
+        @ApiParam(value = "Isbn to find book", required = true) @PathVariable String isbn
+    ) {
         if (!book.getIsbn().equals(isbn)) {
             throw new BookIsbnMismatchException();
         }
@@ -57,7 +70,10 @@ public class BookController {
     }
 
     @DeleteMapping("/{isbn}")
-    public void delete(@PathVariable String isbn) {
+    @ApiOperation(value = "Giving an isbn, deletes a book")
+    public void delete(
+        @ApiParam(value = "Isbn to find book", required = true) @PathVariable String isbn
+    ) {
         exists(isbn);
         bookRepository.deleteById(isbn);
     }

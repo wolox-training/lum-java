@@ -1,5 +1,8 @@
 package wolox.training.models;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.StringReader;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -14,13 +17,14 @@ import wolox.training.exceptions.book.BookNotOwnedException;
 
 @Data
 @Entity
+@ApiModel(description = "Users")
 @NoArgsConstructor
 public class Users {
 
-    @Column(nullable = false) @Id private String username;
-    @Column(nullable = false) private String name;
-    @Column(nullable = false) private LocalDate birthdate;
-    @OneToMany @Column(nullable = false) private List<Book> books;
+    @ApiModelProperty(notes = "User's id", required = true) @Column(nullable = false) @Id private String username;
+    @ApiModelProperty(notes = "User's name",required = true) @Column(nullable = false) private String name;
+    @ApiModelProperty(notes = "User's birthday",required = true) @Column(nullable = false) private LocalDate birthdate;
+    @ApiModelProperty(notes = "User's book colection", required = true) @OneToMany @Column(nullable = false) private List<Book> books;
 
     public void addBook(Book book) {
         books.add(book);

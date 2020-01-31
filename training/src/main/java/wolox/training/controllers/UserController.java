@@ -1,5 +1,8 @@
 package wolox.training.controllers;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +27,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/{username}")
+    @ApiOperation(value = "Giving an username, returns a book", response = Users.class)
     public Users read(@PathVariable String username) {
         try {
             Optional<Users> users = userRepository.findById(username);
@@ -34,7 +38,11 @@ public class UserController {
     }
 
     @PutMapping("/{username}")
-    public Users update(@RequestBody Users users, @PathVariable String username) {
+    @ApiOperation(value = "Giving a user and username, updates given user", response = Users.class)
+    public Users update(
+        @ApiParam(value = "User to update", required = true) @RequestBody Users users,
+        @ApiParam(value = "Username to find user") @PathVariable String username
+    ) {
         if (!users.getUsername().equals(username)) {
             throw new BookIsbnMismatchException();
         }
@@ -43,13 +51,20 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}")
-    public void delete(@PathVariable String usernamme) {
+    @ApiOperation(value = "Giving an username, deletes selected user")
+    public void delete(
+        @ApiParam(value = "Username to find user", required = true) @PathVariable String usernamme
+    ) {
         exists(usernamme);
         userRepository.deleteById(usernamme);
     }
 
     @PutMapping("/{username}/add")
-    public void addBook(@RequestBody Book book, @PathVariable String username) {
+    @ApiOperation(value = "Giving an username and book, ads that book to user")
+    public void addBook(
+        @ApiParam(value = "Book object", required = true) @RequestBody Book book,
+        @ApiParam(value= "Username to find user", required = true) @PathVariable String username
+    ) {
         Users user = read(username);
         if (bookAlreadyExists(user, book)) {
             user.addBook(book);
@@ -60,7 +75,11 @@ public class UserController {
     }
 
     @PutMapping("/{username}/remove")
-    public void removeBook(@RequestBody Book book, @PathVariable String username) {
+    @ApiOperation(value = "Giving an username and book, removes that book from user")
+    public void removeBook(
+        @ApiParam(value = "Book object", required = true) @RequestBody Book book,
+        @ApiParam(value = "Username to find user", required = true) @PathVariable String username
+    ) {
         Users user = read(username);
         if (!bookAlreadyExists(user, book)) {
             user.removeBook(book);

@@ -1,5 +1,7 @@
 package wolox.training.models;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,16 +9,17 @@ import lombok.Data;
 
 @Data
 @Entity
+@ApiModel(description = "Books")
 public class Book {
 
-    @Column(nullable = true) private String genre;
-    @Column(nullable = false) private String author;
-    @Column(nullable = false) private String image;
-    @Column(nullable = false) private String title;
-    @Column(nullable = false) private String subtitle;
-    @Column(nullable = false) private String publisher;
-    @Column(nullable = false) private String year;
-    @Column(nullable = false) private int pages;
-    @Column(nullable = false) @Id private String isbn;
+    @ApiModelProperty(notes = "Book's genre, could be horror, science fiction, etc", required = false) @Column(nullable = true) private String genre;
+    @ApiModelProperty(notes = "Book's author", required = true) @Column(nullable = false) private String author;
+    @ApiModelProperty(notes = "Book's cover image url", required = true ) @Column(nullable = false) private String image;
+    @ApiModelProperty(notes = "Book's title", required = true) @Column(nullable = false) private String title;
+    @ApiModelProperty(notes = "Book's subtitle", required = true) @Column(nullable = false) private String subtitle;
+    @ApiModelProperty(notes = "Book's publisher", required = true) @Column(nullable = false) private String publisher;
+    @ApiModelProperty(notes = "Book's release year", required = true) @Column(nullable = false) private String year;
+    @ApiModelProperty(notes = "Book's amount of pages", required = true) @Column(nullable = false) private int pages;
+    @ApiModelProperty(notes = "Book's id", required = true) @Column(nullable = false) @Id private String isbn;
 
 }
