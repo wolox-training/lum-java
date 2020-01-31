@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import wolox.training.exceptions.BookIsbnMismatchException;
 import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
 
-@Controller
+@RestController
 public class BookController {
 
     @Autowired
@@ -37,7 +38,7 @@ public class BookController {
         return bookRepository.save(book);
     }
 
-    @GetMapping("/{ísbn}")
+    @GetMapping("/{isbn}")
     public Book read(@PathVariable String isbn) {
         try {
             Optional<Book> book = bookRepository.findById(isbn);
