@@ -1,5 +1,6 @@
 package wolox.training.controllers;
 
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -40,7 +41,7 @@ public class BookController {
     @ApiOperation(value = "Giving a book, creates a book", response = Book.class)
     public Book create(
         @ApiParam(value = "Book object") @RequestBody Book book) {
-        return bookRepository.save(book);
+        return bookRepository.save(Preconditions.checkNotNull(book));
     }
 
     @GetMapping("/{ísbn}")
@@ -66,7 +67,7 @@ public class BookController {
             throw new BookIsbnMismatchException();
         }
         exists(isbn);
-        return bookRepository.save(book);
+        return bookRepository.save(Preconditions.checkNotNull(book));
     }
 
     @DeleteMapping("/{isbn}")
