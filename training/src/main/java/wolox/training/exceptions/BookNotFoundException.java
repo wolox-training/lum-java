@@ -5,7 +5,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 public class BookNotFoundException extends ResponseStatusException {
 
-    public BookNotFoundException(Throwable err) {
-        super(HttpStatus.NOT_FOUND, "Given isbn doesn't represent book in DB", err);
+    public BookNotFoundException() {
+        super(HttpStatus.NOT_FOUND, "The given isbn doesn't represent book in DB");
     }
 }

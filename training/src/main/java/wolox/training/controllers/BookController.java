@@ -3,7 +3,6 @@ package wolox.training.controllers;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import wolox.training.exceptions.BookIsbnMismatchException;
+import wolox.training.exceptions.BookIdMismatchException;
 import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
 
-@RestController
+@RestController("api/books")
 public class BookController {
 
     @Autowired
@@ -38,36 +37,23 @@ public class BookController {
         return bookRepository.save(book);
     }
 
-    @GetMapping("/{isbn}")
-    public Book read(@PathVariable String isbn) {
-        try {
-            Optional<Book> book = bookRepository.findById(isbn);
-            return book.orElse(null);
-        } catch(ResponseStatusException e) {
-            throw new BookNotFoundException(e);
-        }
+    @GetMapping("/{id}")
+    public Book read(@PathVariable long id) {
+        return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
     }
 
-    @PutMapping("/{isbn}")
-    public Book update(@RequestBody Book book, @PathVariable String isbn) {
-        if (!book.getIsbn().equals(isbn)) {
-            throw new BookIsbnMismatchException();
+    @PutMapping("/{id}")
+    public Book update(@RequestBody Book book, @PathVariable long id) {
+        if (book.getId() != id) {
+            throw new BookIdMismatchException();
         }
-        exists(isbn);
+        read(id);
         return bookRepository.save(book);
     }
 
-    @DeleteMapping("/{isbn}")
-    public void delete(@PathVariable String isbn) {
-        exists(isbn);
-        bookRepository.deleteById(isbn);
-    }
-
-    private void exists(String isbn) {
-        try {
-            bookRepository.findById(isbn);
-        } catch (ResponseStatusException e) {
-            throw new BookNotFoundException(e);
-        }
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable long id) {
+        read(id);
+        bookRepository.deleteById(id);
     }
 }
