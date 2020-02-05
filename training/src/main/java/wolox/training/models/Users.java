@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import lombok.Data;
@@ -21,10 +23,27 @@ import wolox.training.exceptions.book.BookNotOwnedException;
 @NoArgsConstructor
 public class Users {
 
-    @ApiModelProperty(notes = "User's id", required = true) @Column(nullable = false) @Id private String username;
-    @ApiModelProperty(notes = "User's name",required = true) @Column(nullable = false) private String name;
-    @ApiModelProperty(notes = "User's birthday",required = true) @Column(nullable = false) private LocalDate birthdate;
-    @ApiModelProperty(notes = "User's book colection", required = true) @OneToMany @Column(nullable = false) private List<Book> books;
+    @ApiModelProperty(notes = "User's id", required = true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    private Long id;
+
+    @ApiModelProperty(notes = "User's username", required = true)
+    @Column(nullable = false)
+    private String username;
+
+    @ApiModelProperty(notes = "User's name",required = true)
+    @Column(nullable = false)
+    private String name;
+
+    @ApiModelProperty(notes = "User's birthday",required = true)
+    @Column(nullable = false)
+    private LocalDate birthdate;
+
+    @ApiModelProperty(notes = "User's book colection", required = true)
+    @Column(nullable = false)
+    @OneToMany
+    private List<Book> books;
 
     public void addBook(Book book) {
         books.add(book);
