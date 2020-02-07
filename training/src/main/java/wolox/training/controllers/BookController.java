@@ -1,6 +1,5 @@
 package wolox.training.controllers;
 
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+import wolox.training.exceptions.BookAuthorMismatchException;
 import wolox.training.exceptions.BookIdMismatchException;
 import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
@@ -25,24 +24,29 @@ public class BookController {
     @Autowired
     private BookRepository bookRepository;
 
-    @GetMapping("/greeting")
+    @GetMapping("/api/books/greeting")
     public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
         model.addAttribute("name", name);
         return "greeting";
     }
 
-    @PostMapping
+    @PostMapping("api/books")
     @ResponseStatus(HttpStatus.CREATED)
     public Book create(@RequestBody Book book) {
         return bookRepository.save(book);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/books/{id}")
     public Book read(@PathVariable long id) {
         return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
     }
 
-    @PutMapping("/{id}")
+    @GetMapping("/api/books")
+    public Book findByAuthor(@RequestParam(name="author", required=false) String author) {
+        return bookRepository.findFirstByAuthor(author).orElseThrow(BookAuthorMismatchException::new);
+    }
+
+    @PutMapping("/api/books/{id}")
     public Book update(@RequestBody Book book, @PathVariable long id) {
         if (book.getId() != id) {
             throw new BookIdMismatchException();
@@ -51,7 +55,7 @@ public class BookController {
         return bookRepository.save(book);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/books/{id}")
     public void delete(@PathVariable long id) {
         read(id);
         bookRepository.deleteById(id);
