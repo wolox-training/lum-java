@@ -21,5 +21,4 @@ public class Book {
     @Column(nullable = false) private int pages;
     @Column(nullable = false) private String isbn;
     @GeneratedValue(strategy = GenerationType.AUTO) @Id private long id;
-
 }

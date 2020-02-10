@@ -55,10 +55,10 @@ public class UserController {
         userRepository.deleteById(id);
     }
 
-    @PutMapping("api/users/{username}/add")
+    @PutMapping("api/users/{id}/add")
     public void addBook(@RequestBody Book book, @PathVariable long id) {
         Users user = read(id);
-        if (bookAlreadyExists(user, book)) {
+        if (!bookAlreadyExists(user, book)) {
             user.addBook(book);
             update(user, id);
         } else {
@@ -66,10 +66,10 @@ public class UserController {
         }
     }
 
-    @PutMapping("api/users/{username}/remove")
+    @PutMapping("api/users/{id}/remove")
     public void removeBook(@RequestBody Book book, @PathVariable long id) {
         Users user = read(id);
-        if (!bookAlreadyExists(user, book)) {
+        if (bookAlreadyExists(user, book)) {
             user.removeBook(book);
             update(user, id);
         } else {
@@ -80,7 +80,8 @@ public class UserController {
     private boolean bookAlreadyExists(Users users, Book book) {
         boolean isBookAlreadyAdded = false;
         for (Book element : users.getBooks()) {
-            if (element == book) {
+            element.setId(0);
+            if (element.equals(book)) {
                 isBookAlreadyAdded = true;
                 break;
             }
