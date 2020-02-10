@@ -2,20 +2,20 @@ package wolox.training.models;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.StringReader;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import wolox.training.exceptions.book.BookAlreadyOwnException;
-import wolox.training.exceptions.book.BookNotOwnedException;
 
 @Data
 @Entity
@@ -41,11 +41,14 @@ public class Users {
     private LocalDate birthdate;
 
     @ApiModelProperty(notes = "User's book colection", required = true)
+    @ManyToMany(cascade=CascadeType.ALL)
     @Column(nullable = false)
-    @OneToMany
     private List<Book> books;
 
     public void addBook(Book book) {
+        if (books == null) {
+            books = new ArrayList<Book>();
+        }
         books.add(book);
     }
 

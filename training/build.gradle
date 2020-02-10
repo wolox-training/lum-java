@@ -17,9 +17,13 @@ sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+	jcenter()
 }
 
 dependencies {
+	// JUnit
+	implementation 'junit:junit:4.12'
+
 	// Springboot
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -43,9 +47,13 @@ dependencies {
 	annotationProcessor('org.projectlombok:lombok')
 
 	// Tests
+	// Springboot
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+
+	// Mockito
+	testImplementation 'org.mockito:mockito-core:2.7.22'
 }
 
 test {
