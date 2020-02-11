@@ -41,7 +41,7 @@ public class Users {
     private LocalDate birthdate;
 
     @ApiModelProperty(notes = "User's book colection", required = true)
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @Column(nullable = false)
     private List<Book> books;
 

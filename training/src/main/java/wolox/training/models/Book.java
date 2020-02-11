@@ -55,11 +55,4 @@ public class Book {
     @Id
     private long id;
 
-    @Override
-    public boolean equals(Object o) {
-        Book book = (Book) o;
-        return this.title.equals(book.getTitle()) &&
-            this.author.equals(book.getAuthor()) &&
-            this.isbn.equals(book.getIsbn());
-    }
 }

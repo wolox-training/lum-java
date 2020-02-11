@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("api/users/{id}")
-    @ApiOperation(value = "Giving an id, returns a book", response = Users.class)
+    @ApiOperation(value = "Giving an id, returns an user", response = Users.class)
     public Users read(
         @ApiParam(value = "Id to find user") @PathVariable long id
     ) {
@@ -95,6 +95,7 @@ public class UserController {
     private boolean bookAlreadyExists(Users users, Book book) {
         boolean isBookAlreadyAdded = false;
         for (Book element : users.getBooks()) {
+            element.setId(0);
             if (element.equals(book)) {
                 isBookAlreadyAdded = true;
                 break;

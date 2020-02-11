@@ -6,26 +6,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import wolox.training.controllers.UserController;
 import wolox.training.models.Book;
 import wolox.training.models.Users;
 import wolox.training.repositories.UserRepository;
 
-//@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebMvcTest(UserController.class)
+@ContextConfiguration(classes = {UserRepository.class})
 public class UserControllerTest {
 
-    private static final String USERS_URL = "/api/users/1";
+    private static final String USERS_URL = "api/users/{id}";
 
     @Autowired
     private MockMvc mvc;
@@ -56,8 +61,8 @@ public class UserControllerTest {
     
     @Test
     public void whenUserIdExists_thenUserIsReturned() throws Exception {
-        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
-        mvc.perform(get(USERS_URL)
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        mvc.perform(get(USERS_URL,1)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().json(
