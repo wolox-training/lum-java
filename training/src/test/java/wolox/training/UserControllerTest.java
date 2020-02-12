@@ -9,25 +9,24 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import wolox.training.controllers.UserController;
 import wolox.training.models.Book;
 import wolox.training.models.Users;
 import wolox.training.repositories.UserRepository;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebMvcTest(UserController.class)
-@ContextConfiguration(classes = {UserRepository.class})
+@RunWith(SpringRunner.class)
+@WebMvcTest(controllers = UserController.class)
+@ContextConfiguration(classes = {UserRepository.class, UserController.class})
 public class UserControllerTest {
 
     private static final String USERS_URL = "api/users/{id}";
@@ -62,7 +61,7 @@ public class UserControllerTest {
     @Test
     public void whenUserIdExists_thenUserIsReturned() throws Exception {
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        mvc.perform(get(USERS_URL,1)
+        mvc.perform(get(USERS_URL,1L)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().json(

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,19 +22,20 @@ import wolox.training.exceptions.book.BookNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
 
-@RestController("api/books")
+@RestController
+@RequestMapping("api/books")
 public class BookController {
 
     @Autowired
     private BookRepository bookRepository;
 
-    @GetMapping("/api/books/greeting")
+    @GetMapping("/greeting")
     public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
         model.addAttribute("name", name);
         return "greeting";
     }
 
-    @PostMapping("api/books")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Giving a book, creates a book", response = Book.class)
     public Book create(
@@ -41,7 +43,7 @@ public class BookController {
         return bookRepository.save(Preconditions.checkNotNull(book));
     }
 
-    @GetMapping("/api/books/{id}")
+    @GetMapping("/{id}")
     @ApiOperation(value = "Giving an Id, returns a book", response = Book.class)
     public Book read(
         @ApiParam(value = "Id to find book", required = true) @PathVariable long id
@@ -49,7 +51,7 @@ public class BookController {
         return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
     }
 
-    @PutMapping("/api/books/{id}")
+    @PutMapping("/{id}")
     @ApiOperation(value = "Giving an id and a book, updates a book", response = Book.class)
     public Book update(
         @ApiParam(value = "Book object", required = true) @RequestBody Book book,
@@ -62,8 +64,7 @@ public class BookController {
         return bookRepository.save(book);
     }
 
-
-    @DeleteMapping("/api/books/{id}")
+    @DeleteMapping("/{id}")
     @ApiOperation(value = "Giving an isbn, deletes a book")
     public void delete(
         @ApiParam(value = "Isbn to find book", required = true) @PathVariable long id
@@ -72,7 +73,7 @@ public class BookController {
         bookRepository.deleteById(id);
     }
 
-    @GetMapping("/api/books")
+    @GetMapping
     public Book findByAuthor(@RequestParam(name="author", required=false) String author) {
         return bookRepository.findFirstByAuthor(author).orElseThrow(BookAuthorMismatchException::new);
     }
