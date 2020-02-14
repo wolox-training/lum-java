@@ -1,6 +1,7 @@
 package wolox.training.controllers;
 
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,71 +24,45 @@ import wolox.training.exceptions.users.UserNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.models.Users;
 import wolox.training.repositories.UserRepository;
+import wolox.training.services.UserService;
 
 @RestController
 @RequestMapping("api/users")
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Users create(@RequestBody Users users) {
-        return userRepository.save(users);
+        return userService.createUser(users);
     }
 
     @GetMapping("/{id}")
     public Users read(@PathVariable long id) {
-        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return userService.readUser(id);
     }
 
     @PutMapping("/{id}")
     public Users update(@RequestBody Users users, @PathVariable long id) {
-        if (users.getId() != id ) {
-            throw new UserIdMismatchException();
-        }
-        read(id);
-        return userRepository.save(users);
+        return userService.updateUsers(users, id);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable long id) {
-        read(id);
-        userRepository.deleteById(id);
+        userService.deleteUser(id);
     }
 
     @PutMapping("/{id}/add")
     public void addBook(@RequestBody Book book, @PathVariable long id) {
-        Users user = read(id);
-        if (!bookAlreadyExists(user, book)) {
-            user.addBook(book);
-            update(user, id);
-        } else {
-            throw new BookAlreadyOwnException();
-        }
+        userService.addBook(book, id);
     }
 
     @PutMapping("/{id}/remove")
     public void removeBook(@RequestBody Book book, @PathVariable long id) {
-        Users user = read(id);
-        if (bookAlreadyExists(user, book)) {
-            user.removeBook(book);
-            update(user, id);
-        } else {
-            throw new BookNotOwnedException();
-        }
+        userService.removeBook(book, id);
     }
 
-    private boolean bookAlreadyExists(Users users, Book book) {
-        boolean isBookAlreadyAdded = false;
-        for (Book element : users.getBooks()) {
-            element.setId(0);
-            if (element.equals(book)) {
-                isBookAlreadyAdded = true;
-                break;
-            }
-        }
-        return isBookAlreadyAdded;
-    }
+
 }

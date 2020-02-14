@@ -14,19 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import wolox.training.exceptions.book.BookAuthorMismatchException;
-import wolox.training.exceptions.book.BookIdMismatchException;
-import wolox.training.exceptions.book.BookNotFoundException;
 import wolox.training.models.Book;
-import wolox.training.repositories.BookRepository;
+import wolox.training.services.BookService;
 
+@Slf4j
 @RestController
 @RequestMapping("api/books")
-@Slf4j
 public class BookController {
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookService bookService;
 
     @GetMapping("/greeting")
     public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
@@ -37,31 +34,26 @@ public class BookController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Book create(@RequestBody Book book) {
-        return bookRepository.save(book);
+        return bookService.createBook(book);
     }
 
     @GetMapping("/{id}")
     public Book read(@PathVariable long id) {
-        return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
+        return bookService.readBook(id);
     }
 
     @GetMapping
     public Book findByAuthor(@RequestParam(name="author", required=false) String author) {
-        return bookRepository.findFirstByAuthor(author).orElseThrow(BookAuthorMismatchException::new);
+        return bookService.findByAuthor(author);
     }
 
     @PutMapping("/{id}")
     public Book update(@RequestBody Book book, @PathVariable long id) {
-        if (book.getId() != id) {
-            throw new BookIdMismatchException();
-        }
-        read(id);
-        return bookRepository.save(book);
+        return bookService.updateBook(book,id);
     }
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable long id) {
-        read(id);
-        bookRepository.deleteById(id);
+        bookService.deleteBook(id);
     }
 }
