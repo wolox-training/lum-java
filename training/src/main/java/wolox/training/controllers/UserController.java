@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,24 +24,25 @@ import wolox.training.models.Book;
 import wolox.training.models.Users;
 import wolox.training.repositories.UserRepository;
 
-@RestController("api/users")
+@RestController
+@RequestMapping("api/users")
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("api/users")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Users create(@RequestBody Users users) {
         return userRepository.save(users);
     }
 
-    @GetMapping("api/users/{id}")
+    @GetMapping("/{id}")
     public Users read(@PathVariable long id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    @PutMapping("api/users/{id}")
+    @PutMapping("/{id}")
     public Users update(@RequestBody Users users, @PathVariable long id) {
         if (users.getId() != id ) {
             throw new UserIdMismatchException();
@@ -49,13 +51,13 @@ public class UserController {
         return userRepository.save(users);
     }
 
-    @DeleteMapping("api/users/{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable long id) {
         read(id);
         userRepository.deleteById(id);
     }
 
-    @PutMapping("api/users/{id}/add")
+    @PutMapping("/{id}/add")
     public void addBook(@RequestBody Book book, @PathVariable long id) {
         Users user = read(id);
         if (!bookAlreadyExists(user, book)) {
@@ -66,7 +68,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("api/users/{id}/remove")
+    @PutMapping("/{id}/remove")
     public void removeBook(@RequestBody Book book, @PathVariable long id) {
         Users user = read(id);
         if (bookAlreadyExists(user, book)) {
