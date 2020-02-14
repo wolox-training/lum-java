@@ -1,5 +1,6 @@
 package wolox.training.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -9,55 +10,50 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import wolox.training.exceptions.BookAuthorMismatchException;
-import wolox.training.exceptions.BookIdMismatchException;
-import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
-import wolox.training.repositories.BookRepository;
+import wolox.training.services.BookService;
 
-@RestController("api/books")
+@Slf4j
+@RestController
+@RequestMapping("api/books")
 public class BookController {
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookService bookService;
 
-    @GetMapping("/api/books/greeting")
+    @GetMapping("/greeting")
     public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
         model.addAttribute("name", name);
         return "greeting";
     }
 
-    @PostMapping("api/books")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Book create(@RequestBody Book book) {
-        return bookRepository.save(book);
+        return bookService.createBook(book);
     }
 
-    @GetMapping("/api/books/{id}")
+    @GetMapping("/{id}")
     public Book read(@PathVariable long id) {
-        return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
+        return bookService.readBook(id);
     }
 
-    @GetMapping("/api/books")
+    @GetMapping
     public Book findByAuthor(@RequestParam(name="author", required=false) String author) {
-        return bookRepository.findFirstByAuthor(author).orElseThrow(BookAuthorMismatchException::new);
+        return bookService.findByAuthor(author);
     }
 
-    @PutMapping("/api/books/{id}")
+    @PutMapping("/{id}")
     public Book update(@RequestBody Book book, @PathVariable long id) {
-        if (book.getId() != id) {
-            throw new BookIdMismatchException();
-        }
-        read(id);
-        return bookRepository.save(book);
+        return bookService.updateBook(book,id);
     }
 
-    @DeleteMapping("/api/books/{id}")
+    @DeleteMapping("{id}")
     public void delete(@PathVariable long id) {
-        read(id);
-        bookRepository.deleteById(id);
+        bookService.deleteBook(id);
     }
 }
