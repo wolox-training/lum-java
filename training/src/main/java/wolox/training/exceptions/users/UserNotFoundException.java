@@ -5,7 +5,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 public class UserNotFoundException extends ResponseStatusException {
 
-    public UserNotFoundException(Throwable err) {
-        super(HttpStatus.NOT_FOUND, "Given username doesn't represent an user in DB", err);
+    public UserNotFoundException() {
+        super(HttpStatus.NOT_FOUND, "Given id doesn't represent an user in DB");
     }
 }

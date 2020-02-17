@@ -1,111 +1,77 @@
 package wolox.training.controllers;
 
-import io.swagger.annotations.Api;
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-import wolox.training.exceptions.book.BookAlreadyOwnException;
-import wolox.training.exceptions.book.BookIsbnMismatchException;
-import wolox.training.exceptions.book.BookNotFoundException;
-import wolox.training.exceptions.book.BookNotOwnedException;
 import wolox.training.models.Book;
 import wolox.training.models.Users;
-import wolox.training.repositories.UserRepository;
+import wolox.training.services.UserService;
 
 @RestController
+@RequestMapping("api/users")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private static final String POSSITIVE_ID_MESSAGE = "Book's id must be non negative";
 
-    @GetMapping("/{username}")
-    @ApiOperation(value = "Giving an username, returns a book", response = Users.class)
-    public Users read(@PathVariable String username) {
-        try {
-            Optional<Users> users = userRepository.findById(username);
-            return users.orElse(null);
-        } catch(ResponseStatusException e) {
-            throw new BookNotFoundException(e);
-        }
+    @Autowired
+    private UserService userService;
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Users create(@RequestBody Users users) {
+        return userService.createUser(Preconditions.checkNotNull(users));
     }
 
-    @PutMapping("/{username}")
+    @GetMapping("/{id}")
+    @ApiOperation(value = "Giving an username, returns a book", response = Users.class)
+    public Users read(@PathVariable long id) {
+        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
+        return userService.readUser(id);
+    }
+
     @ApiOperation(value = "Giving a user and username, updates given user", response = Users.class)
+    @PutMapping("/{id}")
     public Users update(
         @ApiParam(value = "User to update", required = true) @RequestBody Users users,
-        @ApiParam(value = "Username to find user") @PathVariable String username
-    ) {
-        if (!users.getUsername().equals(username)) {
-            throw new BookIsbnMismatchException();
-        }
-        exists(username);
-        return userRepository.save(users);
+        @ApiParam(value = "Id to find user") @PathVariable long id)
+    {
+        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
+        return userService.updateUsers(Preconditions.checkNotNull(users), id);
     }
 
-    @DeleteMapping("/{username}")
-    @ApiOperation(value = "Giving an username, deletes selected user")
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Giving an id, deletes selected user")
     public void delete(
-        @ApiParam(value = "Username to find user", required = true) @PathVariable String usernamme
-    ) {
-        exists(usernamme);
-        userRepository.deleteById(usernamme);
+        @ApiParam(value = "Username to find user", required = true) @PathVariable long id)
+    {
+        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
+        userService.deleteUser(id);
     }
 
-    @PutMapping("/{username}/add")
-    @ApiOperation(value = "Giving an username and book, ads that book to user")
+    @ApiOperation(value = "Giving an id and book, ads that book to user")
+    @PutMapping("/{id}/add")
     public void addBook(
         @ApiParam(value = "Book object", required = true) @RequestBody Book book,
-        @ApiParam(value= "Username to find user", required = true) @PathVariable String username
-    ) {
-        Users user = read(username);
-        if (bookAlreadyExists(user, book)) {
-            user.addBook(book);
-            update(user, username);
-        } else {
-            throw new BookAlreadyOwnException();
-        }
+        @PathVariable long id) {
+        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
+        userService.addBook(Preconditions.checkNotNull(book), id);
     }
 
-    @PutMapping("/{username}/remove")
-    @ApiOperation(value = "Giving an username and book, removes that book from user")
-    public void removeBook(
-        @ApiParam(value = "Book object", required = true) @RequestBody Book book,
-        @ApiParam(value = "Username to find user", required = true) @PathVariable String username
-    ) {
-        Users user = read(username);
-        if (!bookAlreadyExists(user, book)) {
-            user.removeBook(book);
-            update(user, username);
-        } else {
-            throw new BookNotOwnedException();
-        }
-
+    @PutMapping("/{id}/remove")
+    public void removeBook(@RequestBody Book book, @PathVariable long id) {
+        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
+        userService.removeBook(Preconditions.checkNotNull(book), id);
     }
 
-    private void exists(String isbn) {
-        try {
-            userRepository.findById(isbn);
-        } catch (ResponseStatusException e) {
-            throw new BookNotFoundException(e);
-        }
-    }
-
-    private boolean bookAlreadyExists(Users users, Book book) {
-        boolean isAlreadySet = false;
-        for (Book element : users.getBooks()) {
-            if (element == book) {
-                isAlreadySet = true;
-                break;
-            }
-        }
-        return isAlreadySet;
-    }
 }
