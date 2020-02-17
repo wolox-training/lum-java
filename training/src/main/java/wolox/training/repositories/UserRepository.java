@@ -7,8 +7,7 @@ import org.springframework.stereotype.Repository;
 import wolox.training.models.Users;
 
 @Repository
-public interface UserRepository extends CrudRepository<Users,String> {
+public interface UserRepository extends CrudRepository<Users,Long> {
 
-    @Query("SELECT users FROM Users users WHERE users.username = :username")
-    Users findUserById(@Param("username") String username);
+    Users findFirstByUsername(String username);
 }

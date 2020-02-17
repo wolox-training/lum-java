@@ -27,6 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
+	// Swagger
 	implementation(group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2')
 	implementation(group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2')
 	implementation("org.springframework.plugin:spring-plugin-core:1.2.0.RELEASE")

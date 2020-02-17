@@ -2,18 +2,18 @@ package wolox.training.models;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.StringReader;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import wolox.training.exceptions.book.BookAlreadyOwnException;
-import wolox.training.exceptions.book.BookNotOwnedException;
 
 @Data
 @Entity
@@ -21,10 +21,27 @@ import wolox.training.exceptions.book.BookNotOwnedException;
 @NoArgsConstructor
 public class Users {
 
-    @ApiModelProperty(notes = "User's id", required = true) @Column(nullable = false) @Id private String username;
-    @ApiModelProperty(notes = "User's name",required = true) @Column(nullable = false) private String name;
-    @ApiModelProperty(notes = "User's birthday",required = true) @Column(nullable = false) private LocalDate birthdate;
-    @ApiModelProperty(notes = "User's book colection", required = true) @OneToMany @Column(nullable = false) private List<Book> books;
+    @ApiModelProperty(notes = "User's id", required = true)
+    @Column(nullable = false)
+    private String username;
+
+    @ApiModelProperty(notes = "User's name",required = true)
+    @Column(nullable = false)
+    private String name;
+
+    @ApiModelProperty(notes = "User's birthday",required = true)
+    @Column(nullable = false)
+    private LocalDate birthdate;
+
+    @ApiModelProperty(notes = "User's book colection", required = true)
+    @ManyToMany(cascade=CascadeType.ALL)
+    @Column(nullable = false)
+    private List<Book> books;
+
+    @Id
+    @ApiModelProperty(notes = "User's id", required = true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     public void addBook(Book book) {
         books.add(book);

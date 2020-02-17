@@ -26,7 +26,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiEndPointsInfo() {
         return new ApiInfoBuilder().termsOfServiceUrl("Recipes REST API")
-            .description("REST API that receives users and he/she's books")
+            .description("REST API that receives users and his/her books")
             .contact( new Contact("Lucas Miotti", "https://github.com/wolox-training/lum-java",
                 "lucas.miotti@wolox.com.ar"))
             .license("Apache 2.0")
