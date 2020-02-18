@@ -1,5 +1,6 @@
 package wolox.training.services;
 
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,9 +44,14 @@ public class BookService {
     }
 
     public void deleteBook(long id) {
-        log.info(String.format("%d was found to delete book",id));
+        log.info(String.format("%d was received to delete book",id));
         readBook(id);
         log.info("Book was found");
         bookRepository.deleteById(id);
+    }
+
+    public List<Book> findByPublisherAndGenreAndYear(String publisher, String genre, String year) {
+        log.info(String.format("%1$s, %2$s and %3$s were received to search book",publisher, genre, year));
+        return bookRepository.findByPublisherAndGenreAndYear(publisher, genre, year).orElseThrow(BookNotFoundException::new);
     }
 }

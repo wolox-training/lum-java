@@ -3,6 +3,7 @@ package wolox.training.controllers;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -68,8 +69,18 @@ public class BookController {
     @GetMapping
     @ApiOperation(value = "Giving an author, returns a book")
     public Book findByAuthor(
-        @ApiParam(value = "Author's name") @RequestParam(name="author", required=false) String author) {
+        @ApiParam(value = "Author's name") @RequestParam(name="author") String author) {
         return bookService.findByAuthor(author);
+    }
+
+    @GetMapping("/h")
+    @ApiParam(value = "Giving a publisher, genre and year, returns a book")
+    public List<Book> findByPublisherAndGenreAndYear(
+        @ApiParam(value = "Book's publisher to find book") @RequestParam(name="publisher") String publisher,
+        @ApiParam(value = "Book's genreAuthor's name") @RequestParam(name="genre") String genre,
+        @ApiParam(value = "Book's year") @RequestParam(name="year") String year
+    ) {
+        return bookService.findByPublisherAndGenreAndYear(publisher, genre, year);
     }
 
 }
