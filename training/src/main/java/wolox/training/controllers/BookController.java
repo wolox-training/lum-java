@@ -1,6 +1,9 @@
 package wolox.training.controllers;
 
-import lombok.extern.slf4j.Slf4j;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -10,14 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 import wolox.training.models.Book;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import wolox.training.services.BookService;
 
-@Slf4j
 @RestController
 @RequestMapping("api/books")
 public class BookController {
@@ -33,27 +35,66 @@ public class BookController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Book create(@RequestBody Book book) {
+    @ApiOperation(value = "Giving a book, creates a book", response = Book.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Book created succesfully"),
+        @ApiResponse(code = 500, message = "One or more fields are invalid")
+    })
+    public Book create(
+        @ApiParam(value = "Book to be created") @RequestBody Book book
+    ) {
         return bookService.createBook(book);
     }
 
     @GetMapping("/{id}")
-    public Book read(@PathVariable long id) {
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Book returned succesfully"),
+        @ApiResponse(code = 404, message = "Book not found")
+    })
+    @ApiOperation(value = "Giving an id, returns a book", response = Book.class)
+    public Book read(
+        @ApiParam(value = "Id to find book", required = true) @PathVariable long id
+    ) {
         return bookService.readBook(id);
-    }
 
-    @GetMapping
-    public Book findByAuthor(@RequestParam(name="author", required=false) String author) {
-        return bookService.findByAuthor(author);
     }
 
     @PutMapping("/{id}")
-    public Book update(@RequestBody Book book, @PathVariable long id) {
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Book updated succesfully"),
+        @ApiResponse(code = 400, message = "Book's id mismatches id given"),
+        @ApiResponse(code = 404, message = "Book not found")
+    })
+    @ApiOperation(value = "Giving an id and a book, updates given book", response = Book.class)
+    public Book update(
+        @ApiParam(value = "Book to update", required = true) @RequestBody Book book,
+        @ApiParam(value = "Id to find book", required = true) @PathVariable long id
+    ) {
         return bookService.updateBook(book,id);
     }
 
-    @DeleteMapping("{id}")
-    public void delete(@PathVariable long id) {
+    @DeleteMapping("/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Book deleted succesfully"),
+        @ApiResponse(code = 400, message = "Book's id mismatches id given"),
+        @ApiResponse(code = 404, message = "Book not found")
+    })
+    @ApiOperation(value = "Giving an id, deletes a book")
+    public void delete(
+        @ApiParam(value = "Id to find book", required = true) @PathVariable long id
+    ) {
         bookService.deleteBook(id);
     }
+
+    @GetMapping
+    @ApiOperation(value = "Giving an author, returns a book")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Book returned succesfully"),
+        @ApiResponse(code = 404, message = "Book not found")
+    })
+    public Book findByAuthor(
+        @ApiParam(value = "Author's name to find book") @RequestParam(name="author", required=false) String author) {
+        return bookService.findByAuthor(author);
+    }
+
 }

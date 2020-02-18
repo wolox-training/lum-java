@@ -1,6 +1,7 @@
 package wolox.training.models;
 
-import java.io.Serializable;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -10,23 +11,37 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@ApiModel(description = "Users")
 @NoArgsConstructor
 public class Users {
 
-    @Column(nullable = false) private String username;
-    @Column(nullable = false) private String name;
-    @Column(nullable = false) private LocalDate birthdate;
-    @ManyToMany(cascade=CascadeType.ALL) @Column(nullable = false) private List<Book> books;
-    @GeneratedValue(strategy = GenerationType.AUTO) @Id private long id;
+    @ApiModelProperty(notes = "User's id", required = true)
+    @Column(nullable = false)
+    private String username;
+
+    @ApiModelProperty(notes = "User's name",required = true)
+    @Column(nullable = false)
+    private String name;
+
+    @ApiModelProperty(notes = "User's birthday",required = true)
+    @Column(nullable = false)
+    private LocalDate birthdate;
+
+    @ApiModelProperty(notes = "User's book colection", required = true)
+    @ManyToMany(cascade=CascadeType.ALL)
+    @Column(nullable = false)
+    private List<Book> books;
+
+    @Id
+    @ApiModelProperty(notes = "User's id", required = true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     public void addBook(Book book) {
         books.add(book);
