@@ -3,6 +3,7 @@ package wolox.training.controllers;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import wolox.training.models.Book;
 import wolox.training.services.BookService;
+import wolox.training.services.OpenLibraryService;
 
 @RestController
 @RequestMapping("api/books")
@@ -26,6 +28,9 @@ public class BookController {
 
     @Autowired
     private BookService bookService;
+
+    @Autowired
+    private OpenLibraryService openLibraryService;
 
     @GetMapping("/greeting")
     public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
@@ -81,6 +86,18 @@ public class BookController {
         @ApiParam(value = "Book's year") @RequestParam(name="year") String year
     ) {
         return bookService.findByPublisherAndGenreAndYear(publisher, genre, year);
+    }
+
+    @GetMapping("/isbn/{isbn}")
+    @ApiParam(value = "Giving an isbn, returns a book from OpenLibrary.org")
+    public void findByIsbn(
+        @ApiParam(value = "Book's isbn to find book") @PathVariable String isbn
+    ) throws IOException {
+        try {
+            bookService.findByIsbn(isbn);
+        } catch (Exception e) {
+            openLibraryService.findBook(isbn);
+        }
     }
 
 }

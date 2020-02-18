@@ -54,4 +54,10 @@ public class BookService {
         log.info(String.format("%1$s, %2$s and %3$s were received to search book",publisher, genre, year));
         return bookRepository.findByPublisherAndGenreAndYear(publisher, genre, year).orElseThrow(BookNotFoundException::new);
     }
+
+    public Book findByIsbn(String isbn) {
+        log.info(String.format("%s was received to search book in DB",isbn));
+        return bookRepository.findFirstByIsbn(isbn).orElseThrow(BookNotFoundException::new);
+    }
+
 }
