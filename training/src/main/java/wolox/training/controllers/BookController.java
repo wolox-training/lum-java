@@ -23,8 +23,6 @@ import wolox.training.services.BookService;
 @RequestMapping("api/books")
 public class BookController {
 
-    private static final String POSSITIVE_ID_MESSAGE = "Book's id must be non negative";
-
     @Autowired
     private BookService bookService;
 
@@ -39,7 +37,7 @@ public class BookController {
     @ApiOperation(value = "Giving a book, creates a book", response = Book.class)
     public Book create(
         @ApiParam(value = "Book object") @RequestBody Book book) {
-        return bookService.createBook(Preconditions.checkNotNull(book));
+        return bookService.createBook(book);
     }
 
     @GetMapping("/{id}")
@@ -47,7 +45,6 @@ public class BookController {
     public Book read(
         @ApiParam(value = "Id to find book", required = true) @PathVariable long id
     ) {
-        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
         return bookService.readBook(id);
     }
 
@@ -57,8 +54,7 @@ public class BookController {
         @ApiParam(value = "Book object", required = true) @RequestBody Book book,
         @ApiParam(value = "Id to find book", required = true) @PathVariable long id
     ) {
-        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
-        return bookService.updateBook(Preconditions.checkNotNull(book), id);
+        return bookService.updateBook(book, id);
     }
 
     @DeleteMapping("/{id}")
@@ -66,7 +62,6 @@ public class BookController {
     public void delete(
         @ApiParam(value = "Id to find book", required = true) @PathVariable long id
     ) {
-        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
         bookService.deleteBook(id);
     }
 
@@ -74,7 +69,7 @@ public class BookController {
     @ApiOperation(value = "Giving an author, returns a book")
     public Book findByAuthor(
         @ApiParam(value = "Author's name") @RequestParam(name="author", required=false) String author) {
-        return bookService.findByAuthor(Preconditions.checkNotNull(author));
+        return bookService.findByAuthor(author);
     }
 
 }

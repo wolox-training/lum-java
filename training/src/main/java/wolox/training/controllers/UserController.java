@@ -22,21 +22,18 @@ import wolox.training.services.UserService;
 @RequestMapping("api/users")
 public class UserController {
 
-    private static final String POSSITIVE_ID_MESSAGE = "Book's id must be non negative";
-
     @Autowired
     private UserService userService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Users create(@RequestBody Users users) {
-        return userService.createUser(Preconditions.checkNotNull(users));
+        return userService.createUser(users);
     }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Giving an username, returns a book", response = Users.class)
     public Users read(@PathVariable long id) {
-        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
         return userService.readUser(id);
     }
 
@@ -46,8 +43,7 @@ public class UserController {
         @ApiParam(value = "User to update", required = true) @RequestBody Users users,
         @ApiParam(value = "Id to find user") @PathVariable long id)
     {
-        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
-        return userService.updateUsers(Preconditions.checkNotNull(users), id);
+        return userService.updateUsers(users, id);
     }
 
     @DeleteMapping("/{id}")
@@ -55,7 +51,6 @@ public class UserController {
     public void delete(
         @ApiParam(value = "Username to find user", required = true) @PathVariable long id)
     {
-        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
         userService.deleteUser(id);
     }
 
@@ -64,14 +59,12 @@ public class UserController {
     public void addBook(
         @ApiParam(value = "Book object", required = true) @RequestBody Book book,
         @PathVariable long id) {
-        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
-        userService.addBook(Preconditions.checkNotNull(book), id);
+        userService.addBook(book, id);
     }
 
     @PutMapping("/{id}/remove")
     public void removeBook(@RequestBody Book book, @PathVariable long id) {
-        Preconditions.checkArgument(id >= 0, POSSITIVE_ID_MESSAGE);
-        userService.removeBook(Preconditions.checkNotNull(book), id);
+        userService.removeBook(book, id);
     }
 
 }
