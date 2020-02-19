@@ -48,4 +48,20 @@ public class BookService {
         log.info("Book was found");
         bookRepository.deleteById(id);
     }
+
+    public Book getAll(
+        String genre,
+        String author,
+        String image,
+        String title,
+        String subtitle,
+        String publisher,
+        String year,
+        int pages,
+        String isbn,
+        long id
+    ) {
+        log.info()
+        return bookRepository.getAll();
+    }
 }

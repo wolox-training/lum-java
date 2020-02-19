@@ -1,9 +1,16 @@
 package wolox.training.controllers;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -97,4 +104,25 @@ public class BookController {
         return bookService.findByAuthor(author);
     }
 
+
+    @GetMapping("/all")
+    @ApiOperation(value = "Giving any parameter, returns a book")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Book returned succesfully"),
+        @ApiResponse(code = 404, message = "Book not found")
+    })
+    public void getAll(
+        @ApiParam(value = "") @RequestParam(required = false) String genre,
+        @ApiParam(value = "") @RequestParam(required = false) String author,
+        @ApiParam(value = "") @RequestParam(required = false) String image,
+        @ApiParam(value = "") @RequestParam(required = false) String title,
+        @ApiParam(value = "") @RequestParam(required = false) String subtitle,
+        @ApiParam(value = "") @RequestParam(required = false) String publisher,
+        @ApiParam(value = "") @RequestParam(required = false) String year,
+        @ApiParam(value = "") @RequestParam(required = false) int pages,
+        @ApiParam(value = "") @RequestParam(required = false) String isbn,
+        @ApiParam(value = "") @RequestParam(required = false) long id
+    ) {
+        return; bookService.getAll(genre, author, image, title, subtitle, publisher, year, pages, isbn, id);
+    }
 }
