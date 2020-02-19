@@ -84,4 +84,17 @@ public class UserController {
             name);
     }
 
+    @GetMapping("/h")
+    @ApiOperation(value = "Giving part of name, returns users")
+    public List<Users> getBetweenDatesAndHaveInUsername2(
+        @ApiParam(value = "Begining date of birthday", required = true) @RequestParam(name="startDate", required = false) String startDate,
+        @ApiParam(value = "End date of birthdate", required = true) @RequestParam(name="endDate", required = false) String endDate,
+        @ApiParam(value = "Part of name", required = true) @RequestParam(name="namePart", required = false) String name
+    ) {
+        return userService.getBetweenDatesAndHaveInUsername2(
+            LocalDate.parse(startDate),
+            LocalDate.parse(endDate),
+            name);
+    }
+
 }

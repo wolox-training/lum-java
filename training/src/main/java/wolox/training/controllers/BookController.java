@@ -83,4 +83,14 @@ public class BookController {
         return bookService.findByPublisherAndGenreAndYear(publisher, genre, year);
     }
 
+    @GetMapping("/hh")
+    @ApiParam(value = "Giving a publisher, genre and year, returns a book")
+    public List<Book> findByPublisherAndGenreAndYear2(
+        @ApiParam(value = "Book's publisher to find book") @RequestParam(name="publisher", required = false) String publisher,
+        @ApiParam(value = "Book's genreAuthor's name") @RequestParam(name="genre", required = false) String genre,
+        @ApiParam(value = "Book's year") @RequestParam(name="year", required = false) String year
+    ) {
+        return bookService.findByPublisherAndGenreAndYear2(publisher, genre, year);
+    }
+
 }

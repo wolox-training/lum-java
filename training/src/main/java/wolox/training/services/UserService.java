@@ -53,6 +53,12 @@ public class UserService {
         return userRepository.findByBirthdateBetweenAndNameContaining(startDate, endDate, namePart);
     }
 
+    public List<Users> getBetweenDatesAndHaveInUsername2(LocalDate startDate, LocalDate endDate, String namePart) {
+        log.info(String.format("startDate=%1$s, endDate=%2$s and namePart=%3$s were received to search user",
+            startDate.toString(), endDate.toString(), namePart));
+        return userRepository.findByBirthdateBetweenAndNameContaining2(startDate, endDate, namePart);
+    }
+
     public void addBook(Book book, long id) {
         log.info(String.format("%s (book) and %d (id) was received to add book to user",book,id));
         Users user = readUser(id);
