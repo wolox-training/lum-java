@@ -1,5 +1,6 @@
 package wolox.training.models;
 
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
@@ -53,5 +54,21 @@ public class Users {
 
     public List<Book> getBooks() {
         return (List<Book>) Collections.unmodifiableList(books);
+    }
+
+    public void setUsername(String username) {
+        this.username = Preconditions.checkNotNull(username, "Username field mustn't be null");
+    }
+
+    public void setName(String name) {
+        this.name = Preconditions.checkNotNull(name, "Name field mustn't be null");
+    }
+
+    public void setBirthdate(LocalDate birthdate) {
+        this.birthdate = Preconditions.checkNotNull(birthdate, "Birthdate field mustn't be null");
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = Preconditions.checkNotNull(books, "Books field mustn't be null");
     }
 }

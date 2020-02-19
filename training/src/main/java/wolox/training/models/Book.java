@@ -1,9 +1,8 @@
 package wolox.training.models;
 
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -56,5 +55,38 @@ public class Book {
     @ApiModelProperty(notes = "Book's id", required = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    public void setAuthor(String author) {
+        this.author = Preconditions.checkNotNull(author, "Author field mustn't be null");
+    }
+
+    public void setImage(String image) {
+        this.image = Preconditions.checkNotNull(image, "Image field mustn't be null");
+    }
+
+    public void setTitle(String title) {
+        this.title = Preconditions.checkNotNull(title, "Title field mustn't be null");
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = Preconditions.checkNotNull(subtitle, "Subtitle field mustn't be null");
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = Preconditions.checkNotNull(publisher, "Publisher field mustn't be null");
+    }
+
+    public void setYear(String year) {
+        this.year = Preconditions.checkNotNull(year, "Year field mustn't be null");
+    }
+
+    public void setPages(int pages) {
+        Preconditions.checkArgument(pages > 0, "Pages field must be positive");
+        this.pages = pages;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = Preconditions.checkNotNull(isbn, "Isbn field mustn't be null");
+    }
 
 }
