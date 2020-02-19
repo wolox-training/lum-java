@@ -90,13 +90,13 @@ public class BookController {
 
     @GetMapping("/isbn/{isbn}")
     @ApiParam(value = "Giving an isbn, returns a book from OpenLibrary.org")
-    public void findByIsbn(
+    public Book findByIsbn(
         @ApiParam(value = "Book's isbn to find book") @PathVariable String isbn
     ) throws IOException {
         try {
-            bookService.findByIsbn(isbn);
+            return bookService.findByIsbn(isbn);
         } catch (Exception e) {
-            openLibraryService.findBook(isbn);
+            return create(openLibraryService.findBook(isbn));
         }
     }
 
