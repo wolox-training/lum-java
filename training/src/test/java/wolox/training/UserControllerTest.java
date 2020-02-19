@@ -23,19 +23,21 @@ import wolox.training.controllers.UserController;
 import wolox.training.models.Book;
 import wolox.training.models.Users;
 import wolox.training.repositories.UserRepository;
+import wolox.training.services.UserService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = UserController.class)
 @ContextConfiguration(classes = {UserRepository.class, UserController.class})
 public class UserControllerTest {
 
-    private static final String USERS_URL = "api/users/{id}";
-
     @Autowired
     private MockMvc mvc;
 
     @MockBean
     private UserRepository userRepository;
+
+    @MockBean
+    private UserService userService;
     private Book book;
     private Users user;
 
@@ -61,7 +63,7 @@ public class UserControllerTest {
     @Test
     public void whenUserIdExists_thenUserIsReturned() throws Exception {
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        mvc.perform(get(USERS_URL,1L)
+        mvc.perform(get("api/users/1")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().json(
@@ -76,7 +78,7 @@ public class UserControllerTest {
     @Test
     public void whenUserIdNoExists_thenUserNotFoundExceptionIsThrown() throws Exception {
         Mockito.when(userRepository.findById(1L)).thenReturn(null);
-        mvc.perform(get(USERS_URL)
+        mvc.perform(get("api/users/1")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().is4xxClientError());
             //.andExpect(UserNotFoundException(ResponseStatusException::new))

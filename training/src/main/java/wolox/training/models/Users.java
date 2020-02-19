@@ -13,7 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -49,7 +48,6 @@ public class Users {
         if (books == null) {
             books = new ArrayList<Book>();
         }
-        books.add(book);
     }
 
     public void removeBook(Book book) {

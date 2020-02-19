@@ -50,9 +50,9 @@ public class Book {
     @Column(nullable = false)
     private String isbn;
 
+    @Id
     @ApiModelProperty(notes = "Book's id", required = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Id
     private long id;
 
 }
