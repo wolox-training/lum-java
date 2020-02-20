@@ -16,7 +16,7 @@ public interface UserRepository extends CrudRepository<Users,Long> {
 
     List<Users> findByBirthdateBetweenAndNameContaining(LocalDate startDate, LocalDate endDate, String namePart);
 
-    @Query("SELECT u FROM Users u WHERE u.birthdate BETWEEN :startDate and :endDate and (:namePart = null or (u.name LIKE CONCAT('%',:namePart,'%')))")
+    @Query("SELECT u FROM Users u WHERE u.birthdate BETWEEN :startDate and :endDate and (:namePart = null or u.name LIKE CONCAT('%',:namePart,'%'))")
     List<Users> findByBirthdateBetweenAndNameContaining2(
         @Param("startDate") LocalDate startDate,
         @Param("endDate") LocalDate endDate,

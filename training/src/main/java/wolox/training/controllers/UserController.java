@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,9 +89,15 @@ public class UserController {
     @GetMapping("/h")
     @ApiOperation(value = "Giving part of name, returns users")
     public List<Users> getBetweenDatesAndHaveInUsername2(
-        @ApiParam(value = "Begining date of birthday", required = true) @RequestParam(name="startDate", required = false) String startDate,
-        @ApiParam(value = "End date of birthdate", required = true) @RequestParam(name="endDate", required = false) String endDate,
-        @ApiParam(value = "Part of name", required = true) @RequestParam(name="namePart", required = false) String name
+        @ApiParam(value = "Begining date of birthday", required = true)
+        @RequestParam(name="startDate", defaultValue = "0000-01-01", required = false)
+            String startDate,
+        @ApiParam(value = "End date of birthdate", required = true)
+        @RequestParam(name="endDate", defaultValue = "9999-01-01",required = false)
+            String endDate,
+        @ApiParam(value = "Part of name", required = true)
+        @RequestParam(name="namePart", defaultValue = "", required = false)
+            String name
     ) {
         return userService.getBetweenDatesAndHaveInUsername2(
             LocalDate.parse(startDate),
