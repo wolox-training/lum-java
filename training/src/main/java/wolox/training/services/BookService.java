@@ -1,5 +1,6 @@
 package wolox.training.services;
 
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,7 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
-    public Book getAll(
+    public List<Book> getAll(
         String genre,
         String author,
         String image,
@@ -57,11 +58,11 @@ public class BookService {
         String subtitle,
         String publisher,
         String year,
-        int pages,
+        Integer pages,
         String isbn,
-        long id
+        Long id
     ) {
-        log.info()
-        return bookRepository.getAll();
+        log.info("Received parameters in service to getAll()");
+        return bookRepository.getAll(genre, author,image,title,subtitle,publisher,year, pages,isbn,id).orElseThrow(BookNotFoundException::new);
     }
 }

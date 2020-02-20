@@ -104,25 +104,24 @@ public class BookController {
         return bookService.findByAuthor(author);
     }
 
-
     @GetMapping("/all")
     @ApiOperation(value = "Giving any parameter, returns a book")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Book returned succesfully"),
         @ApiResponse(code = 404, message = "Book not found")
     })
-    public void getAll(
-        @ApiParam(value = "") @RequestParam(required = false) String genre,
-        @ApiParam(value = "") @RequestParam(required = false) String author,
-        @ApiParam(value = "") @RequestParam(required = false) String image,
-        @ApiParam(value = "") @RequestParam(required = false) String title,
-        @ApiParam(value = "") @RequestParam(required = false) String subtitle,
-        @ApiParam(value = "") @RequestParam(required = false) String publisher,
-        @ApiParam(value = "") @RequestParam(required = false) String year,
-        @ApiParam(value = "") @RequestParam(required = false) int pages,
-        @ApiParam(value = "") @RequestParam(required = false) String isbn,
-        @ApiParam(value = "") @RequestParam(required = false) long id
+    public List<Book> getAll(
+        @ApiParam(value = "Genre to find book") @RequestParam(required = false) String genre,
+        @ApiParam(value = "Author to find book") @RequestParam(required = false) String author,
+        @ApiParam(value = "Image to find book") @RequestParam(required = false) String image,
+        @ApiParam(value = "Title to find book") @RequestParam(required = false) String title,
+        @ApiParam(value = "Subtitle to find book") @RequestParam(required = false) String subtitle,
+        @ApiParam(value = "Publisher to find book") @RequestParam(required = false) String publisher,
+        @ApiParam(value = "Year to find book") @RequestParam(required = false) String year,
+        @ApiParam(value = "Pages to find book") @RequestParam(required = false) Integer pages,
+        @ApiParam(value = "Isbn to find book") @RequestParam(required = false) String isbn,
+        @ApiParam(value = "Id to find book") @RequestParam(required = false) Long id
     ) {
-        return; bookService.getAll(genre, author, image, title, subtitle, publisher, year, pages, isbn, id);
+        return bookService.getAll(genre, author, image, title, subtitle, publisher, year, pages, isbn, id);
     }
 }
