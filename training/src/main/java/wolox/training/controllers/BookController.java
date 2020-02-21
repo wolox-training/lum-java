@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -86,6 +87,16 @@ public class BookController {
     }
 
     @GetMapping
+    @ApiParam(value = "Giving a publisher, genre and year, returns a book")
+    public List<Book> findByPublisherAndGenreAndYear(
+        @ApiParam(value = "Book's publisher to find book") @RequestParam(name="publisher") String publisher,
+        @ApiParam(value = "Book's genreAuthor's name") @RequestParam(name="genre") String genre,
+        @ApiParam(value = "Book's year") @RequestParam(name="year") String year
+    ) {
+        return bookService.findByPublisherAndGenreAndYear(publisher, genre, year);
+    }
+
+    @GetMapping("/author")
     @ApiOperation(value = "Giving an author, returns a book")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Book returned succesfully"),

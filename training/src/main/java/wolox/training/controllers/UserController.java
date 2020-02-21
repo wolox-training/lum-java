@@ -1,5 +1,11 @@
 package wolox.training.controllers;
 
+import com.google.common.base.Preconditions;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import java.time.LocalDate;
+import java.util.List;
+import org.apache.tomcat.jni.Local;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -13,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import wolox.training.models.Book;
@@ -58,6 +65,7 @@ public class UserController {
         @ApiResponse(code = 400, message = "User's id mismatches id given"),
         @ApiResponse(code = 404, message = "User not found")
     })
+
     public Users update(
         @ApiParam(value = "User to update", required = true) @RequestBody Users users,
         @ApiParam(value = "Id to find user") @PathVariable long id)
@@ -105,4 +113,16 @@ public class UserController {
         userService.removeBook(book, id);
     }
 
+    @GetMapping
+    @ApiOperation(value = "Giving part of name, returns users")
+    public List<Users> getBetweenDatesAndHaveInUsername(
+        @ApiParam(value = "Begining date of birthday", required = true) @RequestParam(name="startDate") String startDate,
+        @ApiParam(value = "End date of birthdate", required = true) @RequestParam(name="endDate") String endDate,
+        @ApiParam(value = "Part of name", required = true) @RequestParam(name="name") String name
+    ) {
+        return userService.getBetweenDatesAndHaveInUsername(
+            LocalDate.parse(startDate),
+            LocalDate.parse(endDate),
+            name);
+    }
 }

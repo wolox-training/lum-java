@@ -1,5 +1,7 @@
 package wolox.training.services;
 
+import java.time.LocalDate;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,11 @@ public class UserService {
         readUser(id);
         log.info("User was found");
         userRepository.deleteById(id);
+    }
+
+    public List<Users> getBetweenDatesAndHaveInUsername(LocalDate startDate, LocalDate endDate, String namePart) {
+        log.info(String.format("%s was received to search user", namePart));
+        return userRepository.findByBirthdateBetweenAndNameContaining(startDate, endDate, namePart);
     }
 
     public void addBook(Book book, long id) {
