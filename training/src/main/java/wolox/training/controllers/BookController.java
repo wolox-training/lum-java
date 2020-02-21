@@ -1,8 +1,9 @@
 package wolox.training.controllers;
 
-import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,12 +37,21 @@ public class BookController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Giving a book, creates a book", response = Book.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Book created succesfully"),
+        @ApiResponse(code = 500, message = "One or more fields are invalid")
+    })
     public Book create(
-        @ApiParam(value = "Book object") @RequestBody Book book) {
+        @ApiParam(value = "Book to be created") @RequestBody Book book
+    ) {
         return bookService.createBook(book);
     }
 
     @GetMapping("/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Book returned succesfully"),
+        @ApiResponse(code = 404, message = "Book not found")
+    })
     @ApiOperation(value = "Giving an id, returns a book", response = Book.class)
     public Book read(
         @ApiParam(value = "Id to find book", required = true) @PathVariable long id
@@ -50,15 +60,25 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    @ApiOperation(value = "Giving an id and a book, updates give book", response = Book.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Book updated succesfully"),
+        @ApiResponse(code = 400, message = "Book's id mismatches id given"),
+        @ApiResponse(code = 404, message = "Book not found")
+    })
+    @ApiOperation(value = "Giving an id and a book, updates given book", response = Book.class)
     public Book update(
-        @ApiParam(value = "Book object", required = true) @RequestBody Book book,
+        @ApiParam(value = "Book to update", required = true) @RequestBody Book book,
         @ApiParam(value = "Id to find book", required = true) @PathVariable long id
     ) {
-        return bookService.updateBook(book, id);
+        return bookService.updateBook(book,id);
     }
 
     @DeleteMapping("/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Book deleted succesfully"),
+        @ApiResponse(code = 400, message = "Book's id mismatches id given"),
+        @ApiResponse(code = 404, message = "Book not found")
+    })
     @ApiOperation(value = "Giving an id, deletes a book")
     public void delete(
         @ApiParam(value = "Id to find book", required = true) @PathVariable long id
@@ -67,13 +87,6 @@ public class BookController {
     }
 
     @GetMapping
-    @ApiOperation(value = "Giving an author, returns a book")
-    public Book findByAuthor(
-        @ApiParam(value = "Author's name") @RequestParam(name="author") String author) {
-        return bookService.findByAuthor(author);
-    }
-
-    @GetMapping("/h")
     @ApiParam(value = "Giving a publisher, genre and year, returns a book")
     public List<Book> findByPublisherAndGenreAndYear(
         @ApiParam(value = "Book's publisher to find book") @RequestParam(name="publisher") String publisher,
@@ -81,6 +94,17 @@ public class BookController {
         @ApiParam(value = "Book's year") @RequestParam(name="year") String year
     ) {
         return bookService.findByPublisherAndGenreAndYear(publisher, genre, year);
+    }
+
+    @GetMapping("/author")
+    @ApiOperation(value = "Giving an author, returns a book")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Book returned succesfully"),
+        @ApiResponse(code = 404, message = "Book not found")
+    })
+    public Book findByAuthor(
+        @ApiParam(value = "Author's name to find book") @RequestParam(name="author", required=false) String author) {
+        return bookService.findByAuthor(author);
     }
 
 }
